@@ -1,0 +1,13 @@
+# Skills install artifacts
+.agents/
+.claude/
+.junie/
+skills-lock.json
+node_modules/
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*~
