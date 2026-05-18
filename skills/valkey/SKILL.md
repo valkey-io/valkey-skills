@@ -1,17 +1,15 @@
 ---
 name: valkey
 description: "Use when building apps against Valkey - caching, sessions, queues, locks, rate-limiting, leaderboards, counters, pub/sub, streams, scripting, search, cluster, replication, HA, persistence, security. Not for server internals (valkey-dev) or ops (valkey-ops)."
-version: 3.0.0
-argument-hint: "[feature, pattern, or scenario]"
 ---
 
-Seven reference files under `reference/`. Scan the trigger lists, open the matching file.
+Seven reference files under `referencess/`. Scan the trigger lists, open the matching file.
 
-## reference/valkey-features.md
+## referencess/valkey-features.md
 
 Version-gated commands, per-release changelog, Redis compatibility, RDB magic, module gap.
 
-Triggers: `SET IFEQ`, `SET IFGT`, `SET IFLT` (8.1+), `DELIFEQ`, `DELIFGT`, `DELIFLT` (9.0+), CAS, compare-and-swap, safe lock release, replication rewrite to SET/DEL, GET flag ambiguity, WRONGTYPE, byte-exact comparison, IFEQ never creates missing key.
+Triggers: `SET IFEQ` (8.1+), `DELIFEQ` (9.0+), CAS, compare-and-swap, safe lock release, replication rewrite to SET/DEL, GET flag ambiguity, WRONGTYPE, byte-exact comparison, IFEQ never creates missing key.
 
 Triggers: hash field TTL, `HSETEX`, `HGETEX`, `HEXPIRE`, `HPEXPIRE`, `HEXPIREAT`, `HPEXPIREAT`, `HTTL`, `HPTTL`, `HEXPIRETIME`, `HPEXPIRETIME`, `HPERSIST`, FNX, FXX, NX/XX/GT/LT on fields, KEEPTTL, setter return codes (1/2/0/-2), HTTL codes (-1/-2), HGETALL filters expired, HLEN does not filter, HINCRBY rewrites to HSETEX.
 
@@ -33,7 +31,7 @@ Triggers: Redis compatibility, Redis OSS 2.x-7.2.x baseline, Redis CE 7.4+ incom
 
 Triggers: module gap, valkey-search, valkey-bloom, valkey-json, time series (none).
 
-## reference/app-patterns.md
+## referencess/app-patterns.md
 
 Application idioms: caching, sessions, locks, rate limiting, queues, counters, leaderboards, pub/sub, search.
 
@@ -59,7 +57,7 @@ Triggers (pub/sub): fire-and-forget, at-most-once, subscriber connection monopol
 
 Triggers (search / autocomplete): prefix autocomplete, score-0 lex order, `ZRANGE ... BYLEX`, `SINTER`/`SUNION`/`SINTERCARD` (7.0+) tag filtering, valkey-search module, `FT.SEARCH`, vector similarity.
 
-## reference/performance.md
+## referencess/performance.md
 
 Memory, latency, throughput - encoding, eviction, fragmentation/defrag, latency diagnosis, pipelining/pooling/io-threads, keys, bitmaps, benchmarks.
 
@@ -87,7 +85,7 @@ Triggers (throughput): lazyfree 8.0 default flips (`lazyfree-lazy-user-del/flush
 
 Triggers (benchmark): `valkey-benchmark` `-t`/`-c`/`-n`/`-P`/`--threads`/`-d`/`--tls`/`-q`. `memtier_benchmark --ratio`. Pitfalls: client threads must match server io-threads, pipeline plateau P64-128.
 
-## reference/cluster-and-ha.md
+## referencess/cluster-and-ha.md
 
 Cluster topology, replication, Sentinel, persistence - deployment and failure survival.
 
@@ -111,13 +109,13 @@ Triggers (Sentinel vs Cluster): fits-one-node vs sharded choice.
 
 Triggers (persistence): `appendfsync everysec` 2-s trap, `aof-write-pending-fsync`, `always` ~1000/s rotational. Hybrid: `appendonly yes`, `aof-use-rdb-preamble yes` (default, fast restart), `save 3600 1 300 100 60 10000`, AOF loaded if both present. Fork pause ~1-2 ms/GB, `latest_fork_usec`, THP disable. COW during snapshot 0-2x memory. Cache vs source-of-truth.
 
-## reference/scripting.md
+## referencess/scripting.md
 
 Lua scripting and FUNCTIONs.
 
 Triggers: `EVAL`, `EVALSHA`, `SCRIPT LOAD`, `NOSCRIPT` after restart/failover, `FUNCTION LOAD` persists in RDB/AOF, `FCALL`, `FCALL_RO`, `EVAL_RO` for replicas, ACL `@read`-only, `flags={'no-writes'}`, `busy-reply-threshold` (5000 ms default), `lua-time-limit` legacy alias, `-BUSY`, `SCRIPT KILL`, `FUNCTION KILL`, `SHUTDOWN NOSAVE`, kill works only before first write. Lua memory in `maxmemory`. Native replacements: SET IFEQ, DELIFEQ. Determinism: `server.call('TIME')`/`RANDOMKEY`/`math.random()` avoid in writes. Shebang `#!lua name=<lib>`. `server.register_function` positional vs table form. `FUNCTION LIST/DELETE/DUMP/RESTORE`, `FUNCTION LOAD REPLACE`. `server.call` raises, `server.pcall` single-value with `{err=...}` table on error (not tuple), `server.error_reply`, `server.status_reply`, `redis.*` alias. KEYS[] same-slot rule.
 
-## reference/security.md
+## referencess/security.md
 
 Auth, ACL, TLS.
 
@@ -137,7 +135,7 @@ Triggers (connection knobs): `CLIENT SETNAME`, `CLIENT NO-EVICT ON`.
 
 Triggers (TLS): `tls-port` (commonly 6380), CA cert, mTLS cert+key, 6379 stays plaintext unless replaced, **8.1+ TLS handshake offload** to I/O threads.
 
-## reference/anti-patterns.md
+## referencess/anti-patterns.md
 
 Corrections, detection, fix matrix - "am I doing something stupid" lookup.
 
