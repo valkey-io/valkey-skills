@@ -1,0 +1,39 @@
+{
+  "name": "valkey-skills",
+  "version": "1.0.0",
+  "description": "Domain-specific AI skills for the Valkey ecosystem. Application-developer skill covering caching, sessions, queues, locks, rate-limiting, leaderboards, counters, pub/sub, streams, scripting, search, cluster, replication, HA, persistence, security.",
+  "author": {
+    "name": "valkey-io",
+    "url": "https://github.com/valkey-io"
+  },
+  "homepage": "https://github.com/valkey-io/valkey-skills",
+  "repository": "https://github.com/valkey-io/valkey-skills",
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "valkey",
+    "redis",
+    "cache",
+    "sessions",
+    "streams",
+    "cluster",
+    "replication",
+    "pub-sub",
+    "locks",
+    "rate-limiting"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Valkey",
+    "shortDescription": "Valkey application-developer reference for AI coding agents",
+    "longDescription": "Source-verified Valkey reference for AI coding agents: version-gated commands (IFEQ/DELIFEQ, hash-field TTL, COMMANDLOG, GEOSEARCH BYPOLYGON, CLUSTER MIGRATESLOTS, MPTCP), application patterns (caching, CLIENT TRACKING, sessions, locks, rate limiting, queues/streams, counters, leaderboards, pub/sub, search), performance (encoding, eviction, fragmentation/defrag, latency diagnosis, I/O threads), cluster and HA (hash tags, CROSSSLOT, MOVED/ASK, replication internals, Sentinel, WAIT/WAITAOF, persistence), scripting, security, anti-patterns.",
+    "developerName": "valkey-io",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive"
+    ],
+    "websiteURL": "https://github.com/valkey-io/valkey-skills",
+    "defaultPrompt": [
+      "Help me build an application with Valkey"
+    ]
+  }
+}
