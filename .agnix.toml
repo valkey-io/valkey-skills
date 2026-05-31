@@ -1,0 +1,10 @@
+# agnix configuration for valkey-skills
+# Single-skill repo; suppressions align with Claude Code frontmatter extensions we use intentionally.
+
+[rules]
+disabled_rules = [
+    "CC-SK-012",  # argument-hint is a user-facing hint, not a body reference
+    "CC-SK-017",  # 'version' is an intentional frontmatter field
+    "XP-SK-001",  # 'version' is intentional cross-platform
+    "VER-001",    # informational - no tool/spec versions pinned
+]
