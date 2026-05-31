@@ -1,0 +1,12 @@
+{
+  "name": "valkey",
+  "version": "1.0.0",
+  "description": "Use when building apps against Valkey - caching, sessions, queues, locks, rate-limiting, leaderboards, counters, pub/sub, streams, scripting, search, cluster, replication, HA, persistence, security. Not for server internals or ops.",
+  "author": {
+    "name": "valkey-io",
+    "url": "https://github.com/valkey-io"
+  },
+  "homepage": "https://github.com/valkey-io/valkey-skills",
+  "repository": "https://github.com/valkey-io/valkey-skills",
+  "license": "BSD-3-Clause"
+}
