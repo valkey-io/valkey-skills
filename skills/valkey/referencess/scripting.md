@@ -37,7 +37,7 @@ Lua memory counts against `maxmemory` (not separately capped) - accumulating scr
 | CAS | GET + conditional SET | `SET key v IFEQ old` (8.1+) |
 | Safe lock release | GET + DEL | `DELIFEQ key token` (9.0+) |
 
-No VM overhead, auditable, single-key (no hash-tag juggling). Full command surface in valkey-features.md.
+No VM overhead, auditable, single-key (no hash-tag juggling). Full command surface in `conditional-writes.md`.
 
 ## Determinism
 
