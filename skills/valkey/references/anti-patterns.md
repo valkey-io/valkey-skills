@@ -1,5 +1,7 @@
 # Anti-patterns
 
+Use when checking production anti-patterns, non-obvious corrections, detection commands, and quick fixes for risky Valkey application usage.
+
 ## Non-obvious corrections
 
 - **DEL is already async by default** (Valkey 8.0+): shipped config has `lazyfree-lazy-user-del yes`. `UNLINK` is **intent-visible in code** - a config flip can silently make DEL sync again; UNLINK cannot.

@@ -33,14 +33,19 @@ HPERSIST key FIELDS n field...
 ### Combined set-and-expire, read-and-refresh
 
 ```
+# Valkey 9.0.x
 HSETEX key [FNX|FXX] [EX s|PX ms|EXAT unix-s|PXAT unix-ms|KEEPTTL]
+          FIELDS n field value [field value...]
+
+# Valkey 9.1+ (released as tag 9.1.0)
+HSETEX key [NX|XX] [FNX|FXX] [EX s|PX ms|EXAT unix-s|PXAT unix-ms|KEEPTTL]
           FIELDS n field value [field value...]
 
 HGETEX key [EX s|PX ms|EXAT unix-s|PXAT unix-ms|PERSIST]
           FIELDS n field [field...]
 ```
 
-`FNX`/`FXX` on HSETEX apply to the whole op: FNX requires **none** of the fields exist, FXX requires **all** exist. Condition failure -> **nothing** written (atomic).
+Valkey 9.1+: `NX`/`XX` on HSETEX are key-level: NX requires the hash key to be missing, XX requires it to exist. `FNX`/`FXX` are field-level and apply to the whole op: FNX requires **none** of the fields exist, FXX requires **all** exist. Conditions may be combined; any failure -> **nothing** written (atomic).
 
 `FIELDS n` count must match the number of field names - mismatch = syntax error.
 
@@ -63,7 +68,7 @@ HGETEX key [EX s|PX ms|EXAT unix-s|PXAT unix-ms|PERSIST]
 - `-1` - field exists, had no TTL.
 - `-2` - field does not exist.
 
-**HSETEX** (scalar): `1` all written; `0` FNX/FXX failed; nothing written.
+**HSETEX** (scalar): `1` all written; `0` condition failed (FNX/FXX, plus NX/XX on Valkey 9.1+); nothing written.
 
 **HGETEX** (array, same shape as HMGET): values in field order; `nil` for missing or already-expired fields.
 

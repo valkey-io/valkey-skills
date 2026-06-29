@@ -52,7 +52,7 @@ XAUTOCLAIM queue:tasks workers <new-consumer> <min_idle_ms> <cursor> [COUNT N] [
 
 `XAUTOCLAIM` uses SCAN-like cursor, returns **three** values: `[next_cursor, claimed_entries, deleted_ids]`.
 - `next_cursor == "0-0"` -> sweep complete.
-- `deleted_ids` - entries still in PEL but removed from the stream (usually by XDEL); ack them out-of-band to drop them from PEL scans.
+- `deleted_ids` - entries that were pending but no longer exist in the stream (usually XDEL/XTRIM). Valkey removes them from the PEL while producing this response; XACK is unnecessary and returns 0.
 - `JUSTID` returns IDs only and **does not increment delivery counter** (inspect without side effects).
 
 Trimming:

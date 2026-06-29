@@ -16,15 +16,17 @@ Use for INCR correctness, float-counter caveats, sharded counters, idempotency c
 
 ### Windowed counters
 
-`INCR` auto-creates key at 1. `EXPIRE` is separate; a crash between them leaves a permanent key. Use a pipeline:
+`INCR` auto-creates key at 1. `EXPIRE` is separate; a crash between them leaves a permanent key. A plain pipeline is not atomic.
+
+Choose the TTL semantics explicitly:
+- TTL-refresh counter (expiry extends on every hit): `MULTI`/`EXEC` can make `INCR` + unconditional `EXPIRE` atomic, but steady traffic can keep the key alive forever.
+- Fixed window (TTL starts on first hit): use Lua/FUNCTION so the script can `INCR`, then `EXPIRE` only when the count is `1`. The key must be touched only through this script.
 
 ```
-[pipeline]
-INCR events:2026-03-29T15
-EXPIRE events:2026-03-29T15 7200
+local n = server.call('INCR', KEYS[1])
+if n == 1 then server.call('EXPIRE', KEYS[1], ARGV[1]) end
+return n
 ```
-
-`EXPIRE` on an existing key resets TTL - acceptable for rolling windows.
 
 ### Sharded counters (hot-key bottleneck)
 

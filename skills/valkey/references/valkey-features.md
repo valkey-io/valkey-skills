@@ -15,7 +15,7 @@ Use this as the quick availability matrix. Open the focused reference file in th
 
 | Feature / question | Version | Open |
 |--------------------|---------|------|
-| `SET IFEQ`, CAS, byte-exact comparison, GET ambiguity, native Lua replacement | 8.1+ | `conditional-writes.md` |
+| `SET IFEQ`, CAS, byte-exact comparison, GET old-value handling, native Lua replacement | 8.1+ | `conditional-writes.md` |
 | `DELIFEQ`, safe conditional delete, safe lock release primitive, replication rewrite | 9.0+ | `conditional-writes.md` and, for lock workflow, `app-locks.md` |
 | Hash-field TTL, `HSETEX`, `HGETEX`, `HEXPIRE`, `HTTL`, per-field expiration return codes | 9.0+ | `hash-field-ttl.md` |
 | COMMANDLOG, SLOWLOG compatibility, slow / large request / large reply inspection | 8.1+ | `commandlog.md` |

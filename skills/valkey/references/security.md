@@ -1,5 +1,7 @@
 # Auth / ACL / TLS
 
+Use when configuring AUTH, ACL users, command categories, key/channel/database permissions, application user templates, CLIENT identity, or TLS.
+
 ## AUTH forms
 
 - `AUTH <password>` - default user.
@@ -24,6 +26,8 @@
 | `allkeys` / `resetkeys` | all keys / remove key patterns |
 | `&channel-pattern` | pub/sub channel pattern |
 | `allchannels` / `resetchannels` | all channels / remove channel patterns |
+| `db=0,1` | Valkey 9.1+: allow only listed database IDs |
+| `alldbs` / `resetdbs` | Valkey 9.1+: all databases / remove database access |
 
 ## Command categories
 
@@ -31,9 +35,20 @@
 
 Runtime: `ACL CAT` - list categories; `ACL CAT <cat>` - commands in category; `ACL WHOAMI`, `ACL LIST`, `ACL GETUSER <name>`.
 
-## DB isolation footgun
+## DB restrictions
 
-**ACLs do NOT restrict by database number.** A user with `+@write ~*` writes in **any** numbered DB the server has. Use separate Valkey instances or separate cluster deployments for true DB-level isolation. Valkey 9.0+ cluster multi-DB does not change this.
+Valkey 9.0.x: ACLs do **not** restrict by database number. A user with `+@write ~*` can write any numbered DB the server exposes.
+
+Valkey 9.1+ (released as tag `9.1.0`): ACLs can restrict database IDs with `db=...`, `alldbs`, and `resetdbs`.
+
+```
+ACL SETUSER db0-app on >pw ~app:* +@read +@write +@connection db=0
+ACL SETUSER db12-reader on >pw ~* +@read +@connection db=1,2
+```
+
+Default is `alldbs` for backward compatibility, and `ACL LIST` omits implicit `alldbs`. `resetdbs` leaves the user unable to access numbered DBs until another `db=` or `alldbs` rule is added.
+
+This is an ACL guard, not a tenant-isolation boundary. It is mainly relevant to standalone numbered DBs; cluster deployments normally use DB 0. Prefer separate Valkey instances or clusters when tenants require independent durability, memory, persistence, failover, or admin blast-radius controls.
 
 ## Canonical user templates
 

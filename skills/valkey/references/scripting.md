@@ -1,5 +1,7 @@
 # Lua scripting and FUNCTIONs
 
+Use when working with EVAL/EVALSHA, FUNCTIONs, read-only script variants, replication, script timeouts, determinism, and server.call/pcall behavior.
+
 ## EVAL/EVALSHA vs FCALL
 
 - `EVAL "<src>" N keys... args...` - inline. First call compiles; subsequent calls use `EVALSHA <sha1> N keys... args...`.
@@ -14,8 +16,8 @@ Effects replication always on. `redis.replicate_commands()` is no-op. Replicas r
 ## Read-only variants
 
 `EVAL_RO`, `FCALL_RO` reject writes.
-- Route to replicas in cluster mode; plain EVAL/FCALL require primary.
-- ACL `@read`-only users can call them.
+- Eligible for replica reads in cluster mode when the client is already using replica/read-only routing; plain EVAL/FCALL require primary.
+- ACL still needs explicit scripting permission (`+eval_ro`, `+fcall_ro`, or `+@scripting`); `EVAL_RO`/`FCALL_RO` are `@scripting`, not `@read`. Commands executed inside the script are ACL-checked too.
 - `FCALL_RO` requires function registered with `flags = {'no-writes'}`.
 - KEYS[] must hash to same slot.
 

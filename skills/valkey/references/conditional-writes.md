@@ -11,7 +11,7 @@ SET key new_value IFEQ expected_value [EX s | PX ms | EXAT unix-s | PXAT unix-ms
 Returns `OK` on match-and-store; `nil` on mismatch **or missing key**.
 
 - **`IFEQ never creates a missing key`**: a CAS retry that treats `nil` as "lost the race" must also handle **deleted-since-read**. Check `EXISTS` after or re-bootstrap via `SET ... NX`.
-- **`GET` ambiguity**: returns old value before IFEQ is evaluated. Caller cannot distinguish match+set from mismatch+no-change from the GET reply alone. Use non-GET form for the outcome.
+- With `GET`, the reply is the old value. Compare it to `expected_value`: equal means match-and-store happened; different or nil means no write (mismatch or missing key).
 - **Mutually exclusive** with `NX` and `XX` (syntax error if combined).
 - **Byte-exact** comparison: `"100"` != `"100 "` (trailing space).
 - String-only; non-string key returns `WRONGTYPE`.
