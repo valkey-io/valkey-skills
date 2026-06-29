@@ -3,7 +3,7 @@ name: valkey
 description: "Use when building apps against Valkey - caching, sessions, queues, locks, rate-limiting, leaderboards, counters, pub/sub, streams, scripting, search, cluster, replication, HA, persistence, security. Not for server internals (valkey-dev) or ops (valkey-ops)."
 ---
 
-Reference files live under `referencess/`. Use this file as the router: open the smallest file that matches the user's task, then open adjacent files only when the task crosses a boundary.
+Reference files live under `references/`. Use this file as the router: open the smallest file that matches the user's task, then open adjacent files only when the task crosses a boundary.
 
 ## Feature / Version Routing
 
