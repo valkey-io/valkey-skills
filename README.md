@@ -12,19 +12,26 @@ The file format is the [AgentSkills](https://agentskills.io) open standard. One 
 
 ## What this skill gives you
 
-Seven topic files under `skills/valkey/reference/`, routed from `skills/valkey/SKILL.md`:
+32 topic files under `skills/valkey/references/`, routed from `skills/valkey/SKILL.md`. Files are split by user-task boundary, so a routed lookup lands in a file that is already the right semantic context:
 
-| File | Contents |
-|------|----------|
-| `valkey-features.md` | Version-gated commands (`IFEQ`, `DELIFEQ`, HSETEX family, `COMMANDLOG`, `GEOSEARCH BYPOLYGON`, `CLUSTER MIGRATESLOTS`, MPTCP), per-release changelog, Redis compatibility |
-| `app-patterns.md` | Caching, CLIENT TRACKING, sessions, locks (Redlock, fencing), rate limiting, queues/streams, counters, leaderboards, pub/sub, search |
-| `performance.md` | Encoding, eviction, fragmentation and defrag, LATENCY + COMMANDLOG diagnosis, pipelining, I/O threads |
-| `cluster-and-ha.md` | Hash tags, CROSSSLOT, MOVED/ASK, replication internals, Sentinel, WAIT/WAITAOF, persistence |
-| `scripting.md` | Lua, FUNCTION LOAD, BUSY/KILL rules, native replacements |
-| `security.md` | AUTH, ACL, TLS |
-| `anti-patterns.md` | Non-obvious corrections, listpack thresholds, detection commands |
+| Area | Files | Contents |
+|------|-------|----------|
+| Features and versions | `valkey-features.md`, `conditional-writes.md`, `hash-field-ttl.md`, `commandlog.md`, `geosearch-bypolygon.md`, `redis-compatibility.md` | Version-gated commands (`IFEQ`, `DELIFEQ`, HSETEX family, `COMMANDLOG`, `GEOSEARCH BYPOLYGON`), per-release changelog, Redis migration |
+| Application workflows | `app-caching.md`, `app-client-side-caching.md`, `app-sessions.md`, `app-locks.md`, `app-rate-limiting.md`, `app-queues.md`, `app-counters-dedup.md`, `app-leaderboards.md`, `app-pubsub.md`, `app-search.md` (router: `app-patterns.md`) | Caching, CLIENT TRACKING, sessions, locks (Redlock, fencing), rate limiting, queues/streams, counters, leaderboards, pub/sub, search |
+| Cluster and HA | `cluster-key-client-behavior.md`, `cluster-slot-migration.md`, `replication-sentinel-retries.md`, `durability-persistence.md` (router: `cluster-and-ha.md`) | Hash tags, CROSSSLOT, MOVED/ASK, slot migration, replication internals, Sentinel, WAIT/WAITAOF, persistence |
+| Performance | `performance-memory-encoding.md`, `performance-eviction-ttl.md`, `performance-fragmentation.md`, `performance-latency.md`, `performance-throughput.md`, `performance-benchmarking.md` (router: `performance.md`) | Encoding, eviction, fragmentation and defrag, LATENCY + COMMANDLOG diagnosis, pipelining, I/O threads, `valkey-benchmark` / `memtier_benchmark` pitfalls |
+| Scripting, security, corrections | `scripting.md`, `security.md`, `anti-patterns.md` | Lua, FUNCTION LOAD, BUSY/KILL rules; AUTH, ACL, TLS; non-obvious corrections and detection commands |
+
+Benchmarking has its own reference (`performance-benchmarking.md`) covering `valkey-benchmark` and `memtier_benchmark` syntax and the pipeline/client-thread pitfalls that skew results.
 
 The authoring lens: what a frontier LLM would not know or would get wrong. Kept are exact defaults, error strings, INFO field names, version-gated behavior, and footguns. For example: `DEL` is already async-by-default in Valkey 8.0+; `IFEQ` never creates a missing key; `HSET` strips field TTL while `HSETEX ... KEEPTTL` preserves it; `PFCOUNT` is RW at the key-spec level; `BITFIELD` caps at `u63`; `valkey-cli --cluster reshard` still uses the legacy per-key path in 9.0. Dropped are textbook explanations, per-language client code, and narrative prose.
+
+## Planned skills
+
+The `valkey` skill targets application developers. Server-codebase topics are out of its scope and are planned as separate skills:
+
+- `valkey-dev` - contributing to the Valkey server itself: data structure design and optimization (where memory fetches typically matter more than instruction count), the tcl integration-test framework, unit testing style, and coverage guidelines for changes.
+- `valkey-ops` - operating Valkey in production: deployment, upgrades, monitoring, capacity.
 
 ## Install
 
