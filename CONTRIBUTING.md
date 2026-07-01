@@ -9,8 +9,7 @@ This repository hosts domain-specific AI skills for the Valkey ecosystem - packa
 
 * Have a question? Ask it on
   [GitHub Discussions](https://github.com/valkey-io/valkey-skills/discussions)
-  or [Valkey's Discord](https://discord.gg/zbcPa5umUB)
-  or [Valkey's Matrix](https://matrix.to/#/#valkey:matrix.org)
+  or [Valkey's Slack](https://valkey.io/slack)
 * Found a content bug (wrong default, stale command, misleading example)? [Open an issue](https://github.com/valkey-io/valkey-skills/issues/new).
 * Propose a new skill? Open an issue first with scope, target user, and what it replaces or complements - skills are narrow by design; please don't start writing a new one without alignment.
 * Report a vulnerability? See [SECURITY.md](SECURITY.md).
@@ -90,7 +89,7 @@ Ground rules (also in [CLAUDE.md](CLAUDE.md), which `AGENTS.md` symlinks to):
 
 1. Plain text. No emojis. No ASCII art.
 2. Em-dashes in prose: single dash with spaces ` - `, not ` -- `.
-3. Keep transient reasoning in chat only - do not commit summary, plan, audit, analysis, or temp files.
+3. Keep transient reasoning in chat only - do not commit summary, plan, audit, analysis, or temp files. Do not mention transient issues in committed content: bugs that were introduced and fixed during a working session, problems that only existed earlier in a conversation, or issues that were never part of a commit do not belong in skill files, comments, or docs.
 4. Always verify skill content against actual Valkey source at the baseline version tag; web research is not a substitute.
 5. Do not fragment topic files into smaller units to hit a generic 300-line heuristic; topic-per-file beats file-size limits.
 6. Do not add plugin manifests to individual skill directories beyond what packaging requires.
