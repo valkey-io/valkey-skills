@@ -81,3 +81,14 @@ ACL SETUSER dual on >pw %R~read:* %W~write:* +@read +@write +@connection
 `tls-port` (commonly 6380) + certs on the server. Client provides CA (and cert+key for mTLS). 6379 stays plaintext unless `tls-port` replaces it.
 
 **8.1+ offloads TLS handshakes to I/O threads** - connection bursts no longer block main thread. Tune `io-threads` for TLS-heavy connection churn. Per-command TLS cost after handshake is minimal.
+
+### TLS certificate auth and rotation (9.1+)
+
+`tls-auth-clients-user CN|URI|off` maps the client certificate Common Name or first matching SAN URI to an enabled Valkey ACL user. Use cert-only users without passwords when mTLS is the authentication boundary.
+
+`tls-auto-reload-interval <seconds>` enables background certificate material reloads for built-in TLS; `0` disables. Successful reload logs `TLS materials reloaded successfully`. Strict certificate validation at config load was deferred past 9.1, so a successful `CONFIG SET tls-cert-file ...` is not a complete certificate lint.
+
+`INFO tls`:
+- `tls_server_cert_serial`, `tls_server_cert_expires_in_seconds`
+- `tls_client_cert_serial`, `tls_client_cert_expires_in_seconds`
+- `tls_ca_cert_serial`, `tls_ca_cert_expires_in_seconds`

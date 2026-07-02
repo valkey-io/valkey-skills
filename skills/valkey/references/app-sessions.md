@@ -20,6 +20,8 @@ Rotation on privilege escalation (session fixation prevention): HGETALL old -> H
 
 See `hash-field-ttl.md` for full HSETEX/HGETEX/HEXPIRE surface and gotchas. Session use case: different lifetimes per field (csrf_token 5 min, auth_token 30 min, profile_data stable).
 
+Valkey 9.1+: use `HSETEX session:abc XX ...` for refresh/update paths that must not recreate a deleted session key.
+
 ### HGETEX: read-and-refresh atomic
 
 Replaces HMGET + HEXPIRE pipeline. Each listed field's TTL resets; unlisted fields untouched. True per-field sliding window.
@@ -27,6 +29,16 @@ Replaces HMGET + HEXPIRE pipeline. Each listed field's TTL resets; unlisted fiel
 ```
 HGETEX session:abc EX 3600 FIELDS 2 user_id email
 ```
+
+### HGETDEL: one-time fields (9.1+)
+
+Use for one-shot CSRF/challenge fields or consume-and-remove session metadata:
+
+```
+HGETDEL session:abc FIELDS 1 csrf_token
+```
+
+Returns values in field order, `nil` for missing. It deletes the fields it returns and removes the hash key if it was the last field, so keep stable session identity fields separate from one-shot fields.
 
 ### Concurrent-session tracking
 

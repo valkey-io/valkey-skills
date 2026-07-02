@@ -10,6 +10,8 @@ Parser reads multiple commands from query buffer; keys prefetched in batches. `p
 
 Skips a payload copy for large bulk-string replies under I/O threads. Internal configs `min-io-threads-avoid-copy-reply`, `min-string-size-avoid-copy-reply`.
 
+Valkey 9.1 improves copy-avoidance memory tracking and I/O-thread coordination. Re-benchmark `io-threads` settings after upgrading; old 9.0 thread counts may no longer be the throughput knee.
+
 ## Throughput
 
 ### Lazyfree defaults flipped in Valkey 8.0 (were `no` in Redis)
@@ -46,6 +48,14 @@ Auto-pipelining:
 
 Pipeline for independent commands. Lua / FUNCTION when cmd B depends on cmd A's result.
 
+For many independent string writes with the same TTL, Valkey 9.1+ `MSETEX` can replace a SET+EX pipeline:
+
+```
+MSETEX 3 k1 v1 k2 v2 k3 v3 EX 60
+```
+
+`NX`/`XX` are all-key conditions. Direct Valkey Cluster execution still requires all keys in one slot; clients/proxies that split by shard lose single-command atomicity across slots.
+
 ### Connection pooling
 
 Start at `num_cores * 2`. Idle 30-60 s. Connect timeout 2-5 s.
@@ -68,6 +78,10 @@ Hidden/legacy knobs:
 - `events-per-io-thread` (default 2) - epoll events per cycle before yielding. Raise to amortize more; lower only for tail-latency investigation.
 - **`io-threads-do-reads` is silently ignored.** Reads are always on I/O threads when `io-threads > 1`. Safe to leave in valkey.conf for Redis migration.
 
+Useful 9.1+ INFO fields:
+- `INFO server`: `io_threads_active`.
+- `INFO stats`: `total_reads_processed`, `total_writes_processed`, `io_threaded_reads_processed`, `io_threaded_writes_processed`, `io_threaded_poll_processed`, `io_threaded_total_prefetch_batches`, `io_threaded_total_prefetch_entries`.
+
 Does NOT help: small payloads + few connections; CPU-bound Lua/EVAL; single pipelined client; Unix sockets.
 
 ### Command-selection quick table
@@ -80,7 +94,7 @@ Does NOT help: small payloads + few connections; CPU-bound Lua/EVAL; single pipe
 | `SMEMBERS` (large set) | `SSCAN` |
 | `SORT` (large) | Pre-sort via ZSET or sort client-side |
 | `LRANGE 0 -1` | Paginate explicit ranges |
-| Individual `SET` loop | Pipeline or `MSET` |
+| Individual `SET` loop | Pipeline, `MSET`, or `MSETEX` when all keys share TTL |
 
 ## Hot-key mitigation
 

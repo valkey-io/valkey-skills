@@ -4,7 +4,7 @@ Guidance for AI agents working in this repo. `AGENTS.md` is a symlink to this fi
 
 ## What this repo is
 
-valkey-io/valkey-skills is a domain-specific skills repo for the Valkey ecosystem. Single skill today (`skills/valkey/`, an application-developer reference). Classic skill layout: `SKILL.md` router + `reference/*.md` topic files. No plugin manifest in this repo - Claude Code / OpenCode / Codex plugin packaging ships in separate repos or downstream PRs.
+valkey-io/valkey-skills is a domain-specific skills repo for the Valkey ecosystem. Single skill today (`skills/valkey/`, an application-developer reference). Classic skill layout: `skills/valkey/SKILL.md` router plus topic files under `skills/valkey/references/`. Plugin packaging ships in separate repos or downstream PRs.
 
 ## Ground rules
 
@@ -34,7 +34,7 @@ If 200 lines could be 50, rewrite.
 
 ## Surgical changes
 
-- Don't improve adjacent files not required by the task.
+- Keep changes scoped to files needed by the task.
 - Match existing style of SKILL.md + reference files.
 - Orphan imports / stale cross-refs from your own changes -> remove. Pre-existing ones -> mention, don't auto-delete.
 - Every changed line traces to the user's request.
@@ -42,18 +42,18 @@ If 200 lines could be 50, rewrite.
 ## Skill architecture
 
 - `skills/valkey/SKILL.md` - grep-optimized trigger-list router. Command names, config keys, error codes as literals. Minimal prose.
-- `skills/valkey/reference/<topic>.md` - topic-per-file; current set: `valkey-features`, `app-patterns`, `performance`, `cluster-and-ha`, `scripting`, `security`, `anti-patterns`.
-- File count and per-file line count are deliberate. Do not fragment topic files into smaller units to satisfy a generic 300-line heuristic; locality-of-reference beats file-size.
-- Do not add a plugin manifest (`.claude-plugin/plugin.json`) here. Plugin packaging is a separate concern.
+- `skills/valkey/references/` - topic-per-file; current set: `valkey-features`, `app-patterns`, `performance`, `cluster-and-ha`, `scripting`, `security`, `anti-patterns`.
+- File count and per-file line count are deliberate. Preserve topic locality instead of fragmenting files to satisfy a generic 300-line heuristic.
+- Keep plugin manifests in the separate packaging repos; this repo is skill content only.
 
 ## Version baseline
 
-Valkey 9.0.3. Tracked by `.github/workflows/version-watch.yml`; upstream bumps open a `version-update`-labeled issue. Bumping the baseline requires auditing skill content for changed/new commands, not just editing the workflow.
+Valkey 9.1.0. Tracked by `.github/workflows/version-watch.yml`; upstream bumps open a `version-update`-labeled issue. Bumping the baseline needs an audit of skill content for changed/new commands, not just editing the workflow.
 
 ## CI
 
-- `agnix . --strict` - runs on push to main and on PRs touching `skills/**` or `.agnix.toml`. Suppressions in `.agnix.toml` are documented inline; do not add new ones without a rationale comment.
-- `version-watch.yml` - weekly upstream check.
+- `agnix . --strict` - runs on push to main and on PRs touching `skills/**` or `.agnix.toml`. Suppression changes need a rationale comment.
+- `.github/workflows/version-watch.yml` - weekly upstream check.
 
 ## Goal-driven execution
 

@@ -18,11 +18,12 @@ jobs:
         id: check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BASELINE: "9.0.3"
+          BASELINE: "9.1.0"
         run: |
           latest=$(gh api repos/valkey-io/valkey/releases/latest --jq '.tag_name')
           latest="${latest#v}"
           echo "baseline=${BASELINE} latest=${latest}"
+          echo "baseline=${BASELINE}" >> "$GITHUB_OUTPUT"
 
           if [ -z "$latest" ]; then
             echo "could not fetch latest release" >&2
@@ -59,10 +60,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LATEST: ${{ steps.check.outputs.latest }}
+          BASELINE: ${{ steps.check.outputs.baseline }}
         run: |
           gh issue create \
             --title "Valkey upstream ${LATEST} available" \
             --label version-update \
-            --body "valkey-io/valkey has released ${LATEST}. Current skill baseline is 9.0.3.
+            --body "valkey-io/valkey has released ${LATEST}. Current skill baseline is ${BASELINE}.
 
           Review the release notes for behavior/API changes, update affected skill content, and bump the \`BASELINE\` in \`.github/workflows/version-watch.yml\` when done."

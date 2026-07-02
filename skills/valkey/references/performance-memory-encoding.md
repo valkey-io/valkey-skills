@@ -23,10 +23,10 @@ Inspect: `OBJECT ENCODING key` -> listpack / hashtable / skiplist / intset / qui
 | Condition | Encoding | Alloc |
 |-----------|----------|-------|
 | Value fits a C `long` | `int` | 8 B inline |
-| String <= 44 bytes | `embstr` | single alloc (object + data) |
-| String > 44 bytes | `raw` | two allocs (object + data) |
+| Small string whose object + embedded SDS fits <= 128 B (9.1+) | `embstr` | single alloc (object + data) |
+| Larger string | `raw` | two allocs (object + data) |
 
-44-byte boundary = `OBJ_ENCODING_EMBSTR_SIZE_LIMIT` in `src/object.c`. Stay <= 44 B to avoid the extra pointer indirection.
+Valkey 9.1 embeds when `shouldEmbedStringObject()` fits the combined object/SDS allocation in 128 B. Do not use Redis's old 44-byte `embstr` rule as a Valkey 9.1 sizing boundary.
 
 ## Top-level key overhead
 
@@ -44,6 +44,8 @@ HSET media:12 34 <value>                     # key = id/100, field = id%100
 Each bucket stays under ~100 fields -> listpack -> ~5-10x smaller than individual strings.
 
 Same reason: consolidate same-entity fields into one hash (`HSET user:1000 name ... email ...`) rather than separate keys.
+
+Valkey 9.1 also embeds key / expiry metadata with small string objects when the whole allocation fits, reducing per-key overhead for many sub-128 B string workloads.
 
 ## Size limits (rules of thumb)
 

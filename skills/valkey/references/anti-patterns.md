@@ -36,7 +36,7 @@ valkey-cli COMMANDLOG GET 10 slow
 
 | Anti-pattern | Fix |
 |--------------|-----|
-| `KEYS *` in production | `SCAN` with cursor; variants `HSCAN`/`SSCAN`/`ZSCAN`. |
+| `KEYS *` in production | `SCAN` with cursor; variants `HSCAN`/`SSCAN`/`ZSCAN`. In cluster, use `CLUSTERSCAN` (9.1+) or scan every primary. |
 | Single hot key (counter, rate-limit) | Shard: `counter:0..N`. Use hash tag `counter:{pool}:0` to co-locate shards on one slot for atomic MGET; omit tag only when cross-node spread is required. |
 | `WATCH`+`MULTI` for read-then-write | `SET IFEQ` (8.1+) for CAS, `DELIFEQ` (9.0+) for safe release, or FUNCTION for complex atomic logic. |
 | Pub/Sub for durable messaging | Streams with consumer groups (at-least-once). |
