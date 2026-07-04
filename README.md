@@ -54,10 +54,10 @@ The [`skills` CLI](https://github.com/vercel-labs/skills) writes the skill into 
 
 ```
 codex plugin marketplace add valkey-io/valkey-skills
-codex plugin install valkey
+codex plugin add valkey@valkey-skills
 ```
 
-Pin to a specific commit or tag with `--ref`. The official OpenAI-curated plugin directory is in development; until then, `marketplace add` works against any public repo or local path.
+Pin the marketplace source to a specific commit, branch, or tag with `--ref`, or pass a local checkout path while testing changes.
 
 ### Any AgentSkills-compatible agent (manual)
 

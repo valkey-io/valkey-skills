@@ -1,13 +1,5 @@
 {
   "name": "valkey-skills",
-  "owner": {
-    "name": "valkey-io",
-    "url": "https://github.com/valkey-io"
-  },
-  "metadata": {
-    "description": "Domain-specific AI skills for the Valkey ecosystem",
-    "version": "1.0.0"
-  },
   "interface": {
     "displayName": "Valkey Skills"
   },
@@ -16,9 +8,8 @@
       "name": "valkey",
       "description": "Use when building apps against Valkey - caching, sessions, queues, locks, rate-limiting, leaderboards, counters, pub/sub, streams, scripting, search, cluster, replication, HA, persistence, security. Not for server internals or ops.",
       "source": {
-        "source": "git-subdir",
-        "url": "https://github.com/valkey-io/valkey-skills.git",
-        "path": "./skills/valkey"
+        "source": "local",
+        "path": "./"
       },
       "policy": {
         "installation": "AVAILABLE",
