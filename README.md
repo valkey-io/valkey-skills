@@ -72,7 +72,7 @@ Authoring rules and ground rules for the repo live in [CLAUDE.md](CLAUDE.md) (wh
 - Keep SKILL.md a grep-optimized trigger list. Reference files are topic-per-file; do not fragment on a 300-line rule.
 - No transient files in the repo (summary, plan, audit, analysis).
 
-Issues and PRs welcome.
+Issues and PRs welcome. For vulnerability reports, see [SECURITY.md](SECURITY.md).
 
 ## License
 
