@@ -3,9 +3,25 @@ name: agnix lint
 on:
   push:
     branches: [main]
-    paths: ['skills/**', '.agnix.toml']
+    paths:
+      - 'skills/**'
+      - '.agents/plugins/**'
+      - '.agnix.toml'
+      - '.codex-plugin/**'
+      - '.claude-plugin/**'
+      - '**/.codex-plugin/**'
+      - '**/.claude-plugin/**'
+      - '**/plugin.json'
   pull_request:
-    paths: ['skills/**', '.agnix.toml']
+    paths:
+      - 'skills/**'
+      - '.agents/plugins/**'
+      - '.agnix.toml'
+      - '.codex-plugin/**'
+      - '.claude-plugin/**'
+      - '**/.codex-plugin/**'
+      - '**/.claude-plugin/**'
+      - '**/plugin.json'
 
 jobs:
   lint:

@@ -1,5 +1,7 @@
 # Skills install artifacts
-.agents/
+.agents/*
+!.agents/plugins/
+!.agents/plugins/marketplace.json
 .claude/
 .junie/
 skills-lock.json
