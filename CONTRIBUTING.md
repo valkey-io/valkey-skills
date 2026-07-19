@@ -3,7 +3,7 @@ Contributing to valkey-skills
 
 Welcome and thank you for wanting to contribute.
 
-This repository hosts domain-specific AI skills for the Valkey ecosystem - packaged references that AI coding agents load on demand. The repo is skills-only: no runtime code, no build step. Contributions are authoring and editing skill content.
+This repository hosts domain-specific AI skills for the Valkey ecosystem - packaged references that AI coding agents load on demand. The repo has no runtime code and no build step; packaging metadata is limited to agent marketplace and plugin manifests. Contributions are authoring and editing skill content plus the manifests that expose it.
 
 ## Get started
 
@@ -64,7 +64,7 @@ Layout:
 ```text
 skills/<name>/
   SKILL.md                     # required: router with trigger phrases and a table of reference files
-  reference/
+  references/
     <topic-one>.md             # focused topic file; required frontmatter: a "Use when" trigger line at the top
     <topic-two>.md
 ```
@@ -92,7 +92,7 @@ Ground rules (also in [CLAUDE.md](CLAUDE.md), which `AGENTS.md` symlinks to):
 3. Keep transient reasoning in chat only - do not commit summary, plan, audit, analysis, or temp files. Do not mention transient issues in committed content: bugs that were introduced and fixed during a working session, problems that only existed earlier in a conversation, or issues that were never part of a commit do not belong in skill files, comments, or docs.
 4. Always verify skill content against actual Valkey source at the baseline version tag; web research is not a substitute.
 5. Do not fragment topic files into smaller units to hit a generic 300-line heuristic; topic-per-file beats file-size limits.
-6. Do not add plugin manifests to individual skill directories beyond what packaging requires.
+6. Do not add plugin manifests beyond what packaging requires.
 
 ## How to provide a change
 

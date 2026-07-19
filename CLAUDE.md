@@ -4,7 +4,7 @@ Guidance for AI agents working in this repo. `AGENTS.md` is a symlink to this fi
 
 ## What this repo is
 
-valkey-io/valkey-skills is a domain-specific skills repo for the Valkey ecosystem. Single skill today (`skills/valkey/`, an application-developer reference). Classic skill layout: `skills/valkey/SKILL.md` router plus topic files under `skills/valkey/references/`. Plugin packaging ships in separate repos or downstream PRs.
+valkey-io/valkey-skills is a domain-specific skills repo for the Valkey ecosystem. Single skill today (`skills/valkey/`, an application-developer reference). Classic skill layout: `skills/valkey/SKILL.md` router plus topic files under `skills/valkey/references/`. Packaging metadata lives in `.agents/plugins/`, `.codex-plugin/`, `.claude-plugin/`, and `skills/valkey/.claude-plugin/`.
 
 ## Ground rules
 
@@ -44,7 +44,7 @@ If 200 lines could be 50, rewrite.
 - `skills/valkey/SKILL.md` - grep-optimized trigger-list router. Command names, config keys, error codes as literals. Minimal prose.
 - `skills/valkey/references/` - topic-per-file; current set: `valkey-features`, `app-patterns`, `performance`, `cluster-and-ha`, `scripting`, `security`, `anti-patterns`.
 - File count and per-file line count are deliberate. Preserve topic locality instead of fragmenting files to satisfy a generic 300-line heuristic.
-- Keep plugin manifests in the separate packaging repos; this repo is skill content only.
+- Keep plugin and marketplace manifests focused on packaging the existing skill content.
 
 ## Version baseline
 
@@ -52,7 +52,7 @@ Valkey 9.1.0. Tracked by `.github/workflows/version-watch.yml`; upstream bumps o
 
 ## CI
 
-- `agnix . --strict` - runs on push to main and on PRs touching `skills/**` or `.agnix.toml`. Suppression changes need a rationale comment.
+- `agnix . --strict` - runs on push to main and on PRs touching skill content, marketplace/plugin manifests, or `.agnix.toml`. Suppressions in `.agnix.toml` are documented inline; do not add new ones without a rationale comment.
 - `.github/workflows/version-watch.yml` - weekly upstream check.
 
 ## Goal-driven execution

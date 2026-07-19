@@ -1,5 +1,5 @@
 {
-  "name": "valkey-skills",
+  "name": "valkey",
   "version": "1.0.0",
   "description": "Domain-specific AI skills for the Valkey ecosystem. Application-developer skill covering caching, sessions, queues, locks, rate-limiting, leaderboards, counters, pub/sub, streams, scripting, search, cluster, replication, HA, persistence, security.",
   "author": {
