@@ -13,6 +13,16 @@ Use when working with EVAL/EVALSHA, FUNCTIONs, read-only script variants, replic
 
 Effects replication always on. `redis.replicate_commands()` is no-op. Replicas receive write commands, not Lua source.
 
+## Lua engine packaging (9.1+)
+
+Lua moved behind the scripting-engine module interface; the default 9.1 build statically links the Lua engine, so EVAL/FUNCTION application semantics stay the same. Operators can build/load engines differently, so diagnose missing scripting support via:
+
+```
+INFO scriptingengines
+```
+
+Fields include `engines_count`, `engines_total_used_memory`, and per-engine memory/overhead data. `SCRIPT`/`FUNCTION` memory still counts against `maxmemory`.
+
 ## Read-only variants
 
 `EVAL_RO`, `FCALL_RO` reject writes.

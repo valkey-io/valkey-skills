@@ -1,6 +1,6 @@
 # Cluster key and client behavior
 
-Use for hash slots, hash tags, CROSSSLOT fixes, MOVED/ASK redirects, read-from-replica behavior, cluster pipelining, per-primary SCAN, sharded pub/sub, and numbered DBs in cluster mode.
+Use for hash slots, hash tags, CROSSSLOT fixes, MOVED/ASK redirects, read-from-replica behavior, cluster pipelining, CLUSTERSCAN, per-primary SCAN, sharded pub/sub, and numbered DBs in cluster mode.
 
 ## Cluster slot model
 
@@ -11,7 +11,7 @@ Hash tag rule: if a key contains `{...}`, CRC16 is taken over the substring betw
 Gotchas:
 - Only the **first** `{...}` pair counts. `{a}.{b}` hashes on `a`.
 - Empty tag (`{}` or `{}.foo`) is treated as **no tag** - full key is hashed.
-- Verify with `CLUSTER KEYSLOT "<key>"`.
+- Verify with `CLUSTER KEYSLOT "<key>"`. Valkey 9.1+ accepts it in standalone mode too; older versions require cluster mode.
 - Hot-slot risk: co-locating too many keys under one tag pins that slot to one shard.
 
 Co-location patterns:
@@ -38,18 +38,18 @@ Pre-9.0: only DB 0 in cluster; SELECT errored.
 
 ### Per-node scope
 
-`FLUSHDB`, `SCAN`, `DBSIZE` operate on **this node only** - not cluster-wide. Iterate every primary.
+`FLUSHDB`, `SCAN`, `DBSIZE` operate on **this node only** - not cluster-wide. Use `CLUSTERSCAN` in 9.1+ for key iteration, or iterate every primary on older versions / unsupported clients.
 
 ### Isolation caveat
 
-No resource isolation across DBs - shared memory/CPU/connections. ACL granularity is coarse. For real isolation use separate instances or clusters.
+No resource isolation across DBs - shared memory/CPU/connections. Valkey 9.1+ adds database-level ACLs (`db=...`), but that is an access guard only. For real isolation use separate instances or clusters.
 
 ## CROSSSLOT
 
 Error: `(error) CROSSSLOT Keys in request don't hash to the same slot`.
 
 Commands requiring same slot (server-enforced via `clusterSlotByCommand` in `src/cluster.c` - generic across commands):
-- `MGET`, `MSET`, `MSETNX`
+- `MGET`, `MSET`, `MSETNX`, `MSETEX`
 - `SINTER`, `SUNION`, `SDIFF` + their `*STORE` variants
 - `ZINTER`, `ZUNION`, `ZDIFF` + their `*STORE` variants
 - `LMOVE`, `SMOVE`, `RENAME`, `RENAMENX`
@@ -92,13 +92,19 @@ Read-your-writes: `WAIT <numreplicas> <timeout_ms>` - blocks the writer until N 
 
 Cluster-aware clients group commands by target node and send one pipeline per node in parallel; reassemble in original order. Throughput depends on **per-node batch size**, not total pipeline depth (100 cmds across 3 nodes ≈ 33/node). GLIDE multiplexes internally; explicit pipelining usually not needed.
 
-## SCAN across cluster
+## CLUSTERSCAN / SCAN across cluster
 
-`SCAN` iterates a **single node**. To cover the keyspace, loop `CLUSTER NODES` (or the client's primary list) and SCAN each primary until cursor=0.
+Valkey 9.1+: `CLUSTERSCAN cursor [MATCH pattern] [COUNT n] [TYPE t] [SLOT slot]` iterates across cluster-owned slots and returns `[cursor, keys]`.
+
+- Cursor is opaque (`0-{hash-tag}-local_cursor` internally); feed it back unchanged until it returns `"0"`.
+- `SLOT` restricts to one slot. `MATCH` with a single hash tag can also start at that slot; conflicting `SLOT` + tag returns an empty scan.
+- `COUNT` is still a hint; empty pages are valid.
+
+`SCAN` still iterates a **single node**. For Valkey <9.1 or clients without `CLUSTERSCAN`, loop `CLUSTER NODES` (or the client's primary list) and SCAN each primary until cursor=0.
 
 Gotchas:
 - SCAN on replicas works but may miss/dup keys due to replication lag.
-- Topology change mid-scan (failover or slot move) may lose or duplicate keys. Pause resharding for critical scans.
+- Topology change mid-scan (failover or slot move) may lose/duplicate keys or invalidate a `CLUSTERSCAN` cursor. Pause resharding for critical scans.
 - `KEYS *` in cluster mode only hits the one node it was sent to, and blocks it. Never use.
 
 ## Pub/Sub in cluster

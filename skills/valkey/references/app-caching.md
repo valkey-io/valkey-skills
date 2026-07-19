@@ -49,6 +49,15 @@ Combine: early refresh avoids expiry bursts; lock handles callers crossing the t
 
 `EX <base> + rand(0, <jitter>)`. Identical TTLs across a namespace all expire in one active-expire burst and stall the main thread.
 
+### Bulk set with one TTL (9.1+)
+
+```
+MSETEX 3 cache:a <json> cache:b <json> cache:c <json> EX 300
+MSETEX 2 cache:a <json> cache:b <json> NX EX 300
+```
+
+`MSETEX n key value [key value...] [NX|XX] [EX s|PX ms|EXAT unix-s|PXAT unix-ms|KEEPTTL]` sets string keys with a shared expiry. `NX`/`XX` are all-key conditions: return `0` and write nothing if any key fails the condition. No expiry option removes existing TTLs; use `KEEPTTL` to preserve them. Repeating the same key is legal - last value wins.
+
 ### Explicit invalidation
 
 `UNLINK cache:k` (async free; intent-visible even if `lazyfree-lazy-user-del` is flipped back to `no`).

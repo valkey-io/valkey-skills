@@ -15,6 +15,8 @@ Full-resync triggers:
 - Client-output-buffer-for-replica overflow killed the connection; backlog may have rotated by reconnect.
 - Explicit `PSYNC ? -1`.
 
+Valkey 9.1 observability: replica state can include `rdb_transmitted` during full sync, between RDB transfer and live stream catch-up.
+
 ### Dual replication IDs
 
 After failover, the new primary keeps the old primary's repl ID as a secondary ID. Replicas of the old primary partial-resync to the new primary if their offset is still in the backlog. Why Sentinel failovers usually don't cascade full resyncs.
@@ -46,6 +48,8 @@ Fixes: raise the limit, enable diskless replication (shorter transfer), or dual-
 
 Keep disk-based when you need the RDB file for backups, or when replicas connect at very different times.
 
+Valkey 9.1: with AOF enabled after a disk-based full sync, replicas can reuse the received RDB as the AOF preamble instead of generating another base snapshot.
+
 ### Dual-channel replication (8.0+)
 
 Two TCP connections during full resync - one for RDB, one for live repl stream. Eliminates primary output-buffer-replica overhead -> no resync loop.
@@ -53,6 +57,7 @@ Two TCP connections during full resync - one for RDB, one for live repl stream. 
 - `dual-channel-replication-enabled yes` on replica (default no).
 - Primary must have `repl-diskless-sync yes`.
 - Negotiated in PSYNC handshake; falls back to single-channel if either side lacks it.
+- 9.1+ exposes dual-channel replication buffer memory in `INFO memory` / `MEMORY STATS`; use it when diagnosing full-sync memory pressure.
 
 ### Replica priority / Sentinel selection
 

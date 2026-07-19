@@ -65,3 +65,4 @@ CPU scales linearly between lower and upper thresholds. Below either -> no run. 
 
 - **8.1** new hashtable (64 B buckets, 7 entries/bucket, chain, SIMD presence scan) -> fewer small allocations -> less fragmentation under churn. Many workloads no longer need defrag after 8.1; re-measure first.
 - **9.0** Reply Copy Avoidance reduces alloc churn on read-heavy workloads marginally.
+- **9.1** incremental page release during rehashing reduces latency spikes from large hash table shrink/expand work; still watch `active_defrag_*` and p99 during churn.

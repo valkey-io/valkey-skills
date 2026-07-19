@@ -1,6 +1,6 @@
 # Hash field TTL and key TTL semantics
 
-Use for Valkey 9.0 hash-field expiration, read-and-refresh session fields, per-field counters, and key-level TTL return-code comparisons.
+Use for Valkey 9.0 hash-field expiration, Valkey 9.1 HGETDEL, read-and-refresh session fields, per-field counters, and key-level TTL return-code comparisons.
 
 ## Hash field TTL (9.0+) - 11 new commands
 
@@ -43,6 +43,9 @@ HSETEX key [NX|XX] [FNX|FXX] [EX s|PX ms|EXAT unix-s|PXAT unix-ms|KEEPTTL]
 
 HGETEX key [EX s|PX ms|EXAT unix-s|PXAT unix-ms|PERSIST]
           FIELDS n field [field...]
+
+# Valkey 9.1+
+HGETDEL key FIELDS n field [field...]
 ```
 
 Valkey 9.1+: `NX`/`XX` on HSETEX are key-level: NX requires the hash key to be missing, XX requires it to exist. `FNX`/`FXX` are field-level and apply to the whole op: FNX requires **none** of the fields exist, FXX requires **all** exist. Conditions may be combined; any failure -> **nothing** written (atomic).
@@ -72,6 +75,8 @@ Valkey 9.1+: `NX`/`XX` on HSETEX are key-level: NX requires the hash key to be m
 
 **HGETEX** (array, same shape as HMGET): values in field order; `nil` for missing or already-expired fields.
 
+**HGETDEL** (array, same shape as HMGET): values in field order; `nil` for missing fields; existing fields are deleted. If the last field is deleted, the hash key is removed. Wrong type -> `WRONGTYPE`; `FIELDS n` mismatch -> `ERR numfields should be greater than 0 and match the provided number of fields`.
+
 ### `HEXPIRE key 0` = conditional delete
 
 TTL 0 (or past absolute time) deletes the field immediately and returns `2`. Existence-conditional multi-field delete pattern.
@@ -88,8 +93,9 @@ TTL 0 (or past absolute time) deletes the field immediately and returns `2`. Exi
 
 1. **`HSET` strips field TTL.** Use `HSETEX ... KEEPTTL FIELDS n field value` for in-place value updates that must preserve TTL.
 2. **HEXPIRE is field-level, not key-level.** Set a key `EXPIRE` as safety net - all-persistent fields + no key TTL -> session lives forever.
-3. **`HSETEX` creates the key if missing.** "Refresh CSRF token" on a logged-out session silently re-creates it. Gate refresh writes on `EXISTS <key>`.
+3. **`HSETEX` creates the key if missing unless `XX` is used (9.1+).** "Refresh CSRF token" on a logged-out session silently re-creates it. Use `HSETEX key XX ...` on 9.1+, or gate refresh writes on `EXISTS <key>` on 9.0.x.
 4. **HINCRBY replication rewrite**: on a hash with volatile fields, `HINCRBY` replicates as `HSETEX ... PXAT ... FIELDS 1 <field> <new>`, not as `HINCRBY`. AOF grep for `HINCRBY` misses it.
+5. **`HGETDEL` is destructive.** Use for one-shot fields, not read-and-refresh; it deletes fields even when some requested siblings are missing.
 
 ### Interaction with key-level TTL
 

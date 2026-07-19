@@ -16,7 +16,7 @@ The file format is the [AgentSkills](https://agentskills.io) open standard. One 
 
 | Area | Files | Contents |
 |------|-------|----------|
-| Features and versions | `valkey-features.md`, `conditional-writes.md`, `hash-field-ttl.md`, `commandlog.md`, `geosearch-bypolygon.md`, `redis-compatibility.md` | Version-gated commands (`IFEQ`, `DELIFEQ`, HSETEX family, `COMMANDLOG`, `GEOSEARCH BYPOLYGON`), per-release changelog, Redis migration |
+| Features and versions | `valkey-features.md`, `conditional-writes.md`, `hash-field-ttl.md`, `commandlog.md`, `geosearch-bypolygon.md`, `redis-compatibility.md` | Version-gated commands (`IFEQ`, `DELIFEQ`, `HGETDEL`, `MSETEX`, `CLUSTERSCAN`, HSETEX family, `COMMANDLOG`, `GEOSEARCH BYPOLYGON`), per-release changelog, Redis migration |
 | Application workflows | `app-caching.md`, `app-client-side-caching.md`, `app-sessions.md`, `app-locks.md`, `app-rate-limiting.md`, `app-queues.md`, `app-counters-dedup.md`, `app-leaderboards.md`, `app-pubsub.md`, `app-search.md` (router: `app-patterns.md`) | Caching, CLIENT TRACKING, sessions, locks (Redlock, fencing), rate limiting, queues/streams, counters, leaderboards, pub/sub, search |
 | Cluster and HA | `cluster-key-client-behavior.md`, `cluster-slot-migration.md`, `replication-sentinel-retries.md`, `durability-persistence.md` (router: `cluster-and-ha.md`) | Hash tags, CROSSSLOT, MOVED/ASK, slot migration, replication internals, Sentinel, WAIT/WAITAOF, persistence |
 | Performance | `performance-memory-encoding.md`, `performance-eviction-ttl.md`, `performance-fragmentation.md`, `performance-latency.md`, `performance-throughput.md`, `performance-benchmarking.md` (router: `performance.md`) | Encoding, eviction, fragmentation and defrag, LATENCY + COMMANDLOG diagnosis, pipelining, I/O threads, `valkey-benchmark` / `memtier_benchmark` pitfalls |
@@ -24,7 +24,7 @@ The file format is the [AgentSkills](https://agentskills.io) open standard. One 
 
 Benchmarking has its own reference (`performance-benchmarking.md`) covering `valkey-benchmark` and `memtier_benchmark` syntax and the pipeline/client-thread pitfalls that skew results.
 
-The authoring lens: what a frontier LLM would not know or would get wrong. Kept are exact defaults, error strings, INFO field names, version-gated behavior, and footguns. For example: `DEL` is already async-by-default in Valkey 8.0+; `IFEQ` never creates a missing key; `HSET` strips field TTL while `HSETEX ... KEEPTTL` preserves it; `PFCOUNT` is RW at the key-spec level; `BITFIELD` caps at `u63`; `valkey-cli --cluster reshard` still uses the legacy per-key path in 9.0. Dropped are textbook explanations, per-language client code, and narrative prose.
+The authoring lens: what a frontier LLM would not know or would get wrong. Kept are exact defaults, error strings, INFO field names, version-gated behavior, and footguns. For example: `DEL` is already async-by-default in Valkey 8.0+; `IFEQ` never creates a missing key; `HSET` strips field TTL while `HSETEX ... KEEPTTL` preserves it; `PFCOUNT` is RW at the key-spec level; `BITFIELD` caps at `u63`; Valkey 9.1 `valkey-cli --cluster reshard` needs `--cluster-use-atomic-slot-migration` to use the atomic migration path. Dropped are textbook explanations, per-language client code, and narrative prose.
 
 ## Planned skills
 

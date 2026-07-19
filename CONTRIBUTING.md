@@ -121,6 +121,6 @@ If `agnix --strict` fails on your PR, fix the flagged issue rather than suppress
 
 ## Version baseline
 
-The repo declares a Valkey baseline (currently 9.0.3) in `.github/workflows/version-watch.yml`. Bumping the baseline is a content commitment - every reference file must be audited against the new version's release notes for behavioral changes, renamed commands, new defaults, and deprecations. A baseline bump PR that only edits the workflow without touching content will be rejected.
+The repo declares a Valkey baseline (currently 9.1.0) in `.github/workflows/version-watch.yml`. Bumping the baseline is a content commitment - every reference file must be audited against the new version's release notes for behavioral changes, renamed commands, new defaults, and deprecations. A baseline bump PR that only edits the workflow without touching content will be rejected.
 
 Thanks!

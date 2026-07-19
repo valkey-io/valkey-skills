@@ -48,7 +48,7 @@ If 200 lines could be 50, rewrite.
 
 ## Version baseline
 
-Valkey 9.0.3. Tracked by `.github/workflows/version-watch.yml`; upstream bumps open a `version-update`-labeled issue. Bumping the baseline requires auditing skill content for changed/new commands, not just editing the workflow.
+Valkey 9.1.0. Tracked by `.github/workflows/version-watch.yml`; upstream bumps open a `version-update`-labeled issue. Bumping the baseline needs an audit of skill content for changed/new commands, not just editing the workflow.
 
 ## CI
 
